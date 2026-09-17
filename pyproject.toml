@@ -1,0 +1,4 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["smoke: starter checks that should pass before any issue work"]
+
