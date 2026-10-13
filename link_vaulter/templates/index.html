@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LinkVaulter</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header>
+    <div><h1>LinkVaulter.io</h1></div>
+    <p>Save the references worth finding again</p>
+  </header>
+  <main>
+    <section class="stats" aria-label="Vault summary">
+      <strong>{{ active_count }}</strong> active links
+      <span>•</span>
+      <strong>{{ '%.0f'|format(favorite_rate * 100) }}%</strong> favorites
+    </section>
+
+    <section class="panel">
+      <h2>Add a link</h2>
+      <form method="post" action="{{ url_for('add_link') }}">
+        <label>Title <input name="title" placeholder="Useful reference"></label>
+        <label>URL <input name="url" placeholder="https://example.com"></label>
+        <label>Tags <input name="tags" placeholder="python, testing"></label>
+        <button type="submit">Save link</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <h2>Saved links</h2>
+        <form method="get"><input name="q" value="{{ query }}" placeholder="Search"><button>Search</button></form>
+      </div>
+      <div class="link-grid">
+      {% for link in links %}
+        <article>
+          <div class="tags">{% for tag in link.tags %}<span>{{ tag }}</span>{% endfor %}</div>
+          <h3><a href="{{ link.url }}">{{ link.title }}</a></h3>
+          <small>{{ link.url }}</small>
+          <form method="post" action="{{ url_for('toggle_favorite', link_id=link.id) }}">
+            <button class="secondary">{{ '★ Favorite' if link.favorite else '☆ Add favorite' }}</button>
+          </form>
+        </article>
+      {% else %}<p>No matching links.</p>{% endfor %}
+      </div>
+    </section>
+  </main>
+</body>
+</html>
+
