@@ -8,5 +8,13 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install -r requirements.txt
-      - run: pytest -m smoke
+      - name: Verify package import
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -c "from link_vaulter.app import create_app; print('Import successful')"
+
+      - name: Run smoke tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m pytest tests/test_smoke.py -q
 
