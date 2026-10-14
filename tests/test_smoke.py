@@ -2,7 +2,6 @@ import pytest
 
 from link_vaulter.app import create_app
 
-
 @pytest.fixture()
 def client():
     return create_app(testing=True).test_client()
@@ -12,7 +11,7 @@ def client():
 def test_home_page(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert b"Link Vaulter" in response.data
+    assert b"LinkVaulter" in response.data
 
 
 @pytest.mark.smoke
