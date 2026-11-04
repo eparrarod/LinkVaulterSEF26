@@ -1,4 +1,5 @@
 from __future__ import annotations
+from urllib.parse import urlsplit
 
 from collections import Counter
 
@@ -25,7 +26,22 @@ def total_visits(links: list[dict]) -> int:
     return sum(item["visits"] for item in links)
 
 
+# input: A list of links
+# output: A integer representing the number of unique hostnames
+# Method splits each link passed as a parameter and extracts the hostname and
+# scheme. The method validates the formatting of the link using scheme and adds the
+# hostname to a set if the scheme is valid.
 def unique_domains(links: list[dict]) -> int:
     """Issue 30: count unique hostnames case-insensitively, ignoring www."""
-    return len({item["url"].split("//")[-1].split("/")[0] for item in links})
+    hostname_set = set()
+    for item in links:
+        u = urlsplit(item["url"])
+        hostname = u.hostname
+        link_scheme = u.scheme
+        if hostname is not None:
+            if link_scheme == "http" or link_scheme == "https" and "." in hostname:
+                while 'www.' in hostname:
+                    hostname = hostname.split('www.', 1)[1]
+                hostname_set.add(hostname)
+    return len(hostname_set)
 

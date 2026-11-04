@@ -173,3 +173,64 @@ def test_issue_30():
     ]
     assert unique_domains(links) == 2
 
+# Test for case that their are no links
+def test_issue_30_empty_list():
+    links = []
+    assert unique_domains(links) == 0
+
+# Test that a link with a host is not considered a url
+def test_issue_30_hostless_link():
+    links  = [{"url": "/downloads/SlaySpire/Cat/Dog/textfile.txt"},
+              {"url": "car_car"}]
+    assert unique_domains(links) == 0
+
+# Tests that url path, e.g. /path/tree, does not make a url unique
+def test_issue_30_paths():
+    links  = [{"url": "https://example.com/path/tree"},
+              {"url": "https://example.com/otherpath/bush"}]
+    assert unique_domains(links) == 1
+
+# Tests that url query, e.g. :32000, does not make a url unique
+def test_issue_30_ports():
+    links  = [{"url": "https://example.com:32000/dog/Repos/"},
+              {"url": "https://example.com:1234/cat/Repos/"},
+              {"url": "https://127.0.0.1:1234/cat/Repos/"},
+              {"url": "https://127.0.0.1:32000/cat/Repos/"}]
+    assert unique_domains(links) == 2
+
+# Tests that url query, e.g. doog?pb, does not make a url unique
+def test_issue_30_query():
+    links  = [{"url": "http://google.com/dog?bar"},
+              {"url": "http://www.google.com/dog/cat/doog?pb/db/cheese"},
+              {"url": "https://support.google.com/sa360/answer/9246851?hl=en"},
+              {"url": "https://support.google.com/sa360/answer/9246851?hl=es"}]
+    assert unique_domains(links) == 2
+
+# Tests that url fragment, e.g. dog#golden_retriever_section, does not make a url unique
+def test_issue_30_fragment():
+    links  = [{"url": "https://examkkple.com/dog#golden_retriever_section"},
+              {"url": "https://examkkple.com/dog#labrador_section"}]
+    assert unique_domains(links) == 1
+
+# Test that a url is not considered unique based on its capitalization
+def test_issue_30_not_case_sensitive():
+    links  = [{"url": "https://OWALA.com"},
+              {"url": "https://OwAlA.com"},
+              {"url": "https://owala.com"}]
+    assert unique_domains(links) == 1
+
+# Test that a url is only considered if it contains a valid http or https scheme and
+# is only considered if the hostname is valid
+def test_issue_30_malformed():
+    links  = [{"url": "https://OWALA.edu.com"},
+              {"url": "htps://OwAlA"},
+              {"url": "htttps://owala.com"},
+              {"url": "https:/owalla.com"},
+              {"url": "www.owaHlla.com"}]
+    assert unique_domains(links) == 1
+
+def test_issue_30_multiple_www():
+    links  = [{"url": "https://www.www.OWALA.com"},
+              {"url": "https://OwAlA.com"}]
+    assert unique_domains(links) == 1
+
