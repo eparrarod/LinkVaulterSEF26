@@ -20,8 +20,16 @@ def filter_any_tag(links: list[dict], tags: list[str]) -> list[dict]:
 
 def favorites_first(links: list[dict]) -> list[dict]:
     """Issue 14: favorites first, newest first within both groups"""
-    return sorted(links, key=lambda item: item.get("created_at", ""), reverse=True)
-
+    #   Sorted(): Return a new list containing all items from the iterable in descending order.
+    #   Key: A function that serves as a key for the sort comparison. In this case, it's a lambda function that takes an item (a dictionary representing a link)
+    #   and returns a tuple containing two values
+    #   item.get("favorite", False): This retrieves the value associated with the "favorite"
+    #   check if the link is marked as a favorite. If the "favorite" key is not present in the dictionary, it defaults to False.
+    #   item.get("created_at", ""): This retrieves the value associated with the "created_at key"
+    #   reverse=True: This argument specifies that the sorting should be done in descending order
+    #   All together, this line sorts the links first by whether they are marked as favorites (True comes before False) and then by their creation date (newest first) within each group.
+    #   The result is a new list of links sorted according to these criteria.
+    return sorted(links, key=lambda item:(item.get("favorite", False), item.get("created_at", "")), reverse=True)
 
 def paginate(links: list[dict], page: int, per_page: int) -> list[dict]:
     """Issue 15: use one-based pages and reject invalid page sizes"""
