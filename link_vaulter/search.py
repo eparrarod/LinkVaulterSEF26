@@ -1,9 +1,17 @@
 from __future__ import annotations
 
-
+# Input: list of links
+# Output: list of non-archived links
+# Function loops through a list of links and adds non-archived links to a new list
+# Function returns the non-archived links
 def active_links(links: list[dict]) -> list[dict]:
     """Issue 11: return only non-archived links without mutating the list"""
-    return links
+    nonarchived_links = []
+    for link in links:
+        if "archived" in link:
+            if not link["archived"]:
+                nonarchived_links.append(link)
+    return nonarchived_links
 
 
 def search_text(links: list[dict], query: str) -> list[dict]:

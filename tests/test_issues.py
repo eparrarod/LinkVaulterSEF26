@@ -60,12 +60,64 @@ def test_issue_10():
     assert is_unique_url("HTTPS://EXAMPLE.COM/docs", links) is False
     assert is_unique_url("https://old.example.com", links) is True
 
-
+# Tests list of links with mixed archive truth values
 def test_issue_11():
     links = [{"id": 1, "archived": False}, {"id": 2, "archived": True}]
     result = active_links(links)
     assert result == [{"id": 1, "archived": False}]
     assert links == [{"id": 1, "archived": False}, {"id": 2, "archived": True}]
+
+# Tests empty list of links
+def test_issue_11_empty_list():
+    links = []
+    result = active_links(links)
+    assert result == []
+    assert links == []
+
+# Tests list of links that are all archived
+def test_issue_11_all_archived():
+    links = [{"id": 1, "archived": True}, {"id": 2, "archived": True}]
+    result = active_links(links)
+    assert result == []
+    assert links == [{"id": 1, "archived": True}, {"id": 2, "archived": True}]
+
+
+# Tests list of links that are all non-archived
+def test_issue_11_all_non_archived():
+    links = [{"id": 1, "archived": False}, {"id": 2, "archived": False}]
+    result = active_links(links)
+    assert result == [{"id": 1, "archived": False}, {"id": 2, "archived": False}]
+    assert links == [{"id": 1, "archived": False}, {"id": 2, "archived": False}]
+    assert links == result
+
+# Tests list of one link that is non archived
+def test_issue_11_one_non_archived():
+    links = [{"id": 1, "archived": False}]
+    result = active_links(links)
+    assert result == [{"id": 1, "archived": False}]
+    assert links == [{"id": 1, "archived": False}]
+    assert links == result
+
+# Tests list of one link that is archived
+def test_issue_11_one_archived():
+    links = [{"id": 1, "archived": True}]
+    result = active_links(links)
+    assert result == []
+    assert links == [{"id": 1, "archived": True}]
+
+# Tests list with duplicate links that is archived
+def test_issue_11_duplicate_links():
+    links = [{"id": 1, "archived": False}, {"id": 1, "archived": False}, {"id": 2, "archived": True}]
+    result = active_links(links)
+    assert result == [{"id": 1, "archived": False}, {"id": 1, "archived": False}]
+    assert links == [{"id": 1, "archived": False}, {"id": 1, "archived": False}, {"id": 2, "archived": True}]
+
+# Tests link list with maformed archived key
+def test_issue_11_malformed_links():
+    links = [{"id": 1, "archived": False}, {"id": 1, "archived": False}, {"id": 2, "archived": True}, {"id": 3, "archhived": False}]
+    result = active_links(links)
+    assert result == [{"id": 1, "archived": False}, {"id": 1, "archived": False}]
+    assert links == [{"id": 1, "archived": False}, {"id": 1, "archived": False}, {"id": 2, "archived": True}, {"id": 3, "archhived": False}]
 
 
 def test_issue_12():
