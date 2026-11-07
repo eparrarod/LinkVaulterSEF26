@@ -80,12 +80,32 @@ def test_issue_13():
 
 
 def test_issue_14():
+    #create a list of links with different favorite and created_at values to test the sorting3.
     links = [
         {"id": 1, "favorite": False, "created_at": "2026-09-03"},
         {"id": 2, "favorite": True, "created_at": "2026-09-01"},
         {"id": 3, "favorite": True, "created_at": "2026-09-02"},
+        #   added a link that is not a faovirte but has the same date a id:2 
+        #   to test that the sorting is correct and the favorites are first and then sorted by created_at
+        {"id": 4, "favorite": False, "created_at": "2026-09-01"},
     ]
-    assert [x["id"] for x in favorites_first(links)] == [3, 2, 1]
+    #this is the expected order of the links after sorting by favorites first and then by created_at
+    assert [x["id"] for x in favorites_first(links)] == [3, 2, 1, 4]
+
+#   test that the function works when empty
+def test_issue_14_empty_list():
+    links = []
+    #   should return an empty list when the input is empty
+    assert favorites_first(links) == []
+
+def test_issue_14_no_favorites():
+    links = [
+        {"id": 1, "favorite": False, "created_at": "2026-09-03"},
+        {"id": 2, "favorite": False, "created_at": "2026-09-01"},
+        {"id": 3, "favorite": False, "created_at": "2026-09-02"}
+    ]
+    #   should return the same list sorted by created_at when there are no favorites
+    assert [x["id"] for x in favorites_first(links)] == [1, 3, 2]
 
 
 def test_issue_15():
