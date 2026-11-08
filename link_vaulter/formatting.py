@@ -6,8 +6,13 @@ from html import escape
 
 def display_host(url: str) -> str:
     """Issue 16: display the hostname without credentials, port, or www."""
-    return url.split("//")[-1].split("/")[0]
-
+    host = url.split("//")[-1]
+    host = host.split("/")[0]
+    host = host.split("@")[-1]
+    host = host.split(":")[0]
+    if host.startswith("www."):
+        host = host[4:]
+    return host
 
 def pluralize_visits(count: int) -> str:
     """Issue 17: render '1 visit' and '<n> visits' correctly."""
