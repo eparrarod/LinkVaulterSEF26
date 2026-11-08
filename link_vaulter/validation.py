@@ -10,7 +10,12 @@ def is_nonblank_title(title: str) -> bool:
 
 def is_safe_url(url: str) -> bool:
     """Issue 07: allow only well-formed http and https URLs with a host"""
-    return url.startswith("http")
+    parsed = urlparse(url)
+    if parsed.scheme != "http" and parsed.scheme != "https":
+        return False
+    if parsed.netloc == "":
+        return False
+    return True
 
 
 def has_valid_tag_length(tag: str, maximum: int = 20) -> bool:
