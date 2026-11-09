@@ -16,8 +16,16 @@ def favorite_rate(links: list[dict]) -> float:
 
 def most_common_tag(links: list[dict]) -> str | None:
     """Issue 28: return the most common normalized tag; alphabetical tie-break."""
-    tags = [tag for item in links for tag in item.get("tags", [])]
-    return Counter(tags).most_common(1)[0][0]
+    # Clean up all tags by removing spaces, making them lowercase, and skipping empty tags
+    tags = [tag.strip().lower() for item in links for tag in item.get("tags", []) if tag.strip()]
+
+    # If there are no valid tags, return None.
+    if not tags:
+        return None
+
+    counts = Counter(tags)
+    # Sort by count descending, then alphabetically
+    return min(counts, key=lambda tag: (-counts[tag], tag))  
 
 
 def total_visits(links: list[dict]) -> int:

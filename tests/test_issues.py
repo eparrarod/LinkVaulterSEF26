@@ -118,6 +118,7 @@ def test_issue_20():
 
 
 def test_issue_21():
+    # Checks that JSON output is pretty-printed, sorted, and preserves foreign characters
     result = export_json([{"title": "Café", "id": 1}])
     assert result == '[\n  {\n    "id": 1,\n    "title": "Café"\n  }\n]'
 
@@ -157,8 +158,29 @@ def test_issue_27():
 
 
 def test_issue_28():
-    links = [{"tags": ["Web", "python"]}, {"tags": ["web", "Python"]}]
+    # Checks that tags are converted to lowercase and
+    # alphabetical order is used when the counts are tied.
+    links = [
+        {"tags": ["Web", "python"]},
+        {"tags": ["web", "Python"]}
+    ]
+
     assert most_common_tag(links) == "python"
+
+
+def test_issue_28_normalization_and_empty_tags():
+    # Checks that extra spaces and capitalization are ignored
+    # when counting tags, and that empty tags are skipped.
+    links = [
+        {"tags": [" Web ", "PYTHON", ""]},
+        {"tags": ["web", "   "]},
+    ]
+
+    assert most_common_tag(links) == "web"
+
+    # Checks that None is returned when there are no valid tags.
+    assert most_common_tag([]) is None
+    assert most_common_tag([{"tags": ["", "   "]}]) is None
 
 
 def test_issue_29():
