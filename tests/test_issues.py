@@ -47,7 +47,33 @@ def test_issue_08():
     assert has_valid_tag_length("   ") is False
     assert has_valid_tag_length("  python  ", maximum=6) is True
 
+# A blank or whitespace-only tag fails
+def test_issue_08_rejects_blank_tags():
+    assert has_valid_tag_length("") is False
+    assert has_valid_tag_length("   ") is False
+    assert has_valid_tag_length("\t\n ") is False
 
+
+# A trimmed length equal to the maximum passes; one more fails
+def test_issue_08_maximum_boundary():
+    assert has_valid_tag_length("python", maximum=6) is True
+    assert has_valid_tag_length("python", maximum=5) is False
+    assert has_valid_tag_length("a" * 20) is True
+    assert has_valid_tag_length("a" * 21) is False
+
+
+# Surrounding whitespace does not count toward the length
+def test_issue_08_ignores_surrounding_whitespace():
+    assert has_valid_tag_length("  python  ", maximum=6) is True
+    assert has_valid_tag_length("  python  ", maximum=5) is False
+
+
+# The input string remains unchanged
+def test_issue_08_does_not_change_input():
+    tag = "  python  "
+    has_valid_tag_length(tag, maximum=6)
+    assert tag == "  python  "
+    
 def test_issue_09():
     assert validate_import_row({}) == ["missing title", "missing url"]
 
