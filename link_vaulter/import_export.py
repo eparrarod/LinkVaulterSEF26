@@ -12,7 +12,13 @@ def export_json(links: list[dict]) -> str:
 
 def import_json(payload: str) -> list[dict]:
     """Issue 22: require a top-level list of objects; reject other shapes."""
-    return json.loads(payload)
+    data = json.loads(payload)
+    if not isinstance(data, list):
+        raise ValueError(f"not a top-level list of objects: {type(data).__name__}")
+    for index, item in enumerate(data):
+        if not isinstance(item, dict):
+            raise ValueError(f"index {index} is not an object: {type(item).__name__}")
+    return data
 
 
 def export_csv(links: list[dict]) -> str:
