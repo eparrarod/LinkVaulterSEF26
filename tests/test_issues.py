@@ -127,11 +127,36 @@ def test_issue_22():
     with pytest.raises(ValueError):
         import_json('{"title": "A"}')
 
+#list of dictionary is accepted, an empty list is accepted
+def test_issue_22_accept_valid_lists():
+    assert import_json('[]') == []
+    assert import_json('[{"title": "A"}, {"title": "B"}]') == [{"title": "A"},{"title": "B"} ]
+
+# a top level object, scalar or null is rejected
+def test_issue_22_rejects_invalid_shapes():
+    with pytest.raises(ValueError, match="top-level list of objects"):
+        import_json('42')
+    with pytest.raises(ValueError, match="top-level list of objects"):
+        import_json('"text"')
+    with pytest.raises(ValueError, match="top-level list of objects"):
+        import_json('true')
+    with pytest.raises(ValueError, match="top-level list of objects"):
+        import_json('null')
+
+#a mixed list containing a scalar is rejected
+def test_issue_22_rejects_mixed_list():
+    with pytest.raises(ValueError, match="index 1 is not an object"):
+        import_json('[{"title": "A"}, 5]')
+    with pytest.raises(ValueError, match="index 1 is not an object"):
+        import_json('[{"title": "A"}, "text"]') 
+
+    
 
 def test_issue_23():
     payload = export_csv([{"title": "One, Two", "url": "https://x.test", "tags": ["a", "b"]}])
     assert '"One, Two"' in payload
     assert "a;b" in payload
+
 
 
 def test_issue_24():
