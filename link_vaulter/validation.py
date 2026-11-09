@@ -15,8 +15,8 @@ def is_safe_url(url: str) -> bool:
 
 def has_valid_tag_length(tag: str, maximum: int = 20) -> bool:
     """Issue 08: trimmed tags must contain 1..maximum characters"""
-    return len(tag) <= maximum
-
+    trimmed = tag.strip()
+    return 1 <= len(trimmed) <= maximum
 
 def validate_import_row(row: dict) -> list[str]:
     """Issue 09: report all missing required fields"""
