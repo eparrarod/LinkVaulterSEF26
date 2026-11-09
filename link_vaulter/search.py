@@ -19,10 +19,10 @@ def filter_any_tag(links: list[dict], tags: list[str]) -> list[dict]:
 
 
 def get_created_at(link):
-    return link.get("created_at", "")
-    
-def favorites_first(links: list[dict]) -> list[dict]:
     """Issue 14: favorites first, newest first within both groups"""
+    return link.get("created_at", "")
+
+def favorites_first(links: list[dict]) -> list[dict]:
     favorites = []
     regular_links = []
 

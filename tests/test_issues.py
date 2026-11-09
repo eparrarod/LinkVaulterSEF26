@@ -81,6 +81,7 @@ def test_issue_13():
 
 def test_issue_14():
     links = [
+        #Created 2 additional IDs to better test
         {"id": 1, "favorite": False, "created_at": "2026-09-03"},
         {"id": 2, "favorite": True, "created_at": "2026-09-01"},
         {"id": 3, "favorite": True, "created_at": "2026-09-02"},
@@ -155,7 +156,25 @@ def test_issue_25():
 
 
 def test_issue_26():
-    assert count_active([{"archived": False}, {"archived": True}, {}]) == 2
+    #Checking that it counts unarchived links
+    assert count_active([{"archived": False}]) == 1
+
+    #Checking that it does not count archived links
+    assert count_active([{"archived": True}]) == 0
+
+    #Checking that if a link is undefined it is counted as unarchived
+    assert count_active([{}]) == 1
+
+    #Checking if no links then it returns 0
+    assert count_active([]) == 0
+
+    #Checking if there's multiple links with a mix of archived and unarchived links
+    links = [
+        {"archived": False},
+        {"archived": True},
+        {}
+    ]
+    assert count_active(links) == 2
 
 
 def test_issue_27():
