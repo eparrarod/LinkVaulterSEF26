@@ -84,8 +84,16 @@ def test_issue_14():
         {"id": 1, "favorite": False, "created_at": "2026-09-03"},
         {"id": 2, "favorite": True, "created_at": "2026-09-01"},
         {"id": 3, "favorite": True, "created_at": "2026-09-02"},
+        {"id": 4, "favorite": False, "created_at": "2026-09-04"},
+        {"id": 5, "favorite": True, "created_at": "2026-09-02"},
     ]
-    assert [x["id"] for x in favorites_first(links)] == [3, 2, 1]
+    original = [item.copy() for item in links]
+
+    result = favorites_first(links)
+
+    assert [item["id"] for item in result] == [3, 5, 2, 4, 1]
+    assert links == original
+    assert result is not links
 
 
 def test_issue_15():

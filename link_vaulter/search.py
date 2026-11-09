@@ -18,9 +18,27 @@ def filter_any_tag(links: list[dict], tags: list[str]) -> list[dict]:
     return [item for item in links if all(tag in item["tags"] for tag in tags)]
 
 
+def get_created_at(link):
+    return link.get("created_at", "")
+    
 def favorites_first(links: list[dict]) -> list[dict]:
     """Issue 14: favorites first, newest first within both groups"""
-    return sorted(links, key=lambda item: item.get("created_at", ""), reverse=True)
+    favorites = []
+    regular_links = []
+
+    # Separate the links into two groups.
+    for link in links:
+        if link.get("favorite", False):
+            favorites.append(link)
+        else:
+            regular_links.append(link)
+
+    # Sort each group from newest to oldest.
+    favorites = sorted(favorites, key=get_created_at, reverse=True)
+    regular_links = sorted(regular_links, key=get_created_at, reverse=True)
+
+    # Put the favorites before the regular links.
+    return favorites + regular_links
 
 
 def paginate(links: list[dict], page: int, per_page: int) -> list[dict]:
