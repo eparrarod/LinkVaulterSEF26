@@ -21,9 +21,8 @@ def test_issue_02():
 def test_issue_03():
     assert normalize_tags([" Python ", "", "PYTHON", "Review"]) == ["python", "review"]
 
-
 def test_issue_04():
-    assert next_link_id([{"id": 2}, {"id": 9}]) == 10
+    assert next_link_id([{"id": 2}, {"id": 9}]) ==10
 
 
 def test_issue_05():
@@ -100,7 +99,9 @@ def test_issue_16():
 
 def test_issue_17():
     assert pluralize_visits(1) == "1 visit"
-
+    assert pluralize_visits(0) == "0 visits"
+    assert pluralize_visits(2) == "2 visits"
+    assert pluralize_visits(-1) == "-1 visits"
 
 def test_issue_18():
     assert safe_tag_html('<script>alert("x")</script>') == '<span class="tag">&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt;</span>'

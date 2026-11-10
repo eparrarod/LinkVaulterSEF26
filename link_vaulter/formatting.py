@@ -11,7 +11,7 @@ def display_host(url: str) -> str:
 
 def pluralize_visits(count: int) -> str:
     """Issue 17: render '1 visit' and '<n> visits' correctly."""
-    return f"{count} visits"
+    return f"{count} {'visit' if count == 1 else 'visits'}"
 
 
 def safe_tag_html(tag: str) -> str:
