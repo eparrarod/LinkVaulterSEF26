@@ -25,9 +25,9 @@ def next_link_id(links: list[dict]) -> int:
 
 def restore_link(link: dict) -> dict:
     """Issue 05: return a restored copy without mutating the input"""
-    link["archived"] = False
-    return link
-
+    restored = link.copy()
+    restored["archived"] = False
+    return restored
 
 def new_link(link_id: int, title: str, url: str, tags: list[str]) -> dict:
     return {
