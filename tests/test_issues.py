@@ -156,6 +156,7 @@ def test_issue_24():
 
 
 def test_issue_25():
+    #Honestly this test already covers the functionality of what it's asking I think? It checks that the private information is hidden and that it's not the original
     original = {"id": 1, "title": "A", "url": "https://a.test", "tags": [], "owner_email": "student@example.edu", "internal_notes": "private"}
     result = public_link_view(original)
     assert result == {"id": 1, "title": "A", "url": "https://a.test", "tags": []}

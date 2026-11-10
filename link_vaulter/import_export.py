@@ -32,5 +32,15 @@ def import_csv(payload: str) -> list[dict]:
 
 def public_link_view(link: dict) -> dict:
     """Issue 25: expose public fields only and return a new dictionary."""
-    return link
+    #Kind of confused on what it's asking me to do here? Based off the test it looks like I keep everything except owner_email and notes.
+    #Create new fields and dictionary.
+    public_fields = ["id", "title", "url", "tags"]
+    public_link = {}
+
+    #Populate new dictionary.
+    for field in public_fields:
+        if field in link:
+            public_link[field] = link[field]
+
+    return public_link
 
