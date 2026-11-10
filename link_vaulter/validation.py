@@ -21,11 +21,7 @@ def has_valid_tag_length(tag: str, maximum: int = 20) -> bool:
 def validate_import_row(row: dict) -> list[str]:
     """Issue 09: report all missing required fields"""
     required = ("title", "url")
-    for field in required:
-        if not row.get(field):
-            return [f"missing {field}"]
-    return []
-
+    return [f"missing {field}" for field in required if not row.get(field)]
 
 def is_unique_url(candidate: str, links: list[dict]) -> bool:
     """Issue 10: compare canonical URLs and ignore archived records"""
