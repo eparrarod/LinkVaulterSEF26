@@ -141,10 +141,87 @@ def test_issue_24():
 
 
 def test_issue_25():
+
+    #Original test case to ensure that public_link_view returns only the public fields and does not mutate the original link
     original = {"id": 1, "title": "A", "url": "https://a.test", "tags": [], "owner_email": "student@example.edu", "internal_notes": "private"}
     result = public_link_view(original)
     assert result == {"id": 1, "title": "A", "url": "https://a.test", "tags": []}
     assert result is not original
+
+    #Makes sure that the list of tags is copied
+    def test_issue_25_tags_are_independent():
+    original = {
+        "id": 1,
+        "title": "A",
+        "url": "https://a.test",
+        "tags": [],
+    }
+
+    result = public_link_view(original)
+    result["tags"].append("x")
+
+    assert result["tags"] == ["x"]
+    assert original["tags"] == []
+
+
+    #Ensures that the original link is not mutated when calling public_link_view
+    def test_issue_25_source_unchanged():
+        original = {
+            "id": 1,
+            "title": "A",
+            "url": "https://a.test",
+            "tags": ["python"],
+            "owner_email": "student@example.edu",
+            "internal_notes": "private",
+        }
+
+        before = original.copy()
+        before["tags"] = original["tags"].copy()
+
+        public_link_view(original)
+
+        assert original == before
+
+
+    #Makes sure that if a field isn't defined in the original link, it won't appear in the public view
+    def test_issue_25_unknown_fields_removed():
+        original = {
+            "id": 1,
+            "title": "A",
+            "url": "https://a.test",
+            "tags": ["python"],
+            "visits": 10,
+            "favorite": True,
+            "created_at": "2026-09-17",
+        }
+
+        result = public_link_view(original)
+
+        assert result == {
+            "id": 1,
+            "title": "A",
+            "url": "https://a.test",
+            "tags": ["python"],
+        }
+
+
+    #Makes sure that if a field is missing from the public links, it wont output a blank value.
+    def test_issue_25_missing_tags():
+        original = {
+            "id": 1,
+            "title": "A",
+            "url": "https://a.test",
+        }
+
+        result = public_link_view(original)
+
+        assert result == {
+            "id": 1,
+            "title": "A",
+            "url": "https://a.test",
+        }
+        assert "tags" not in result
+    
 
 
 def test_issue_26():

@@ -36,10 +36,14 @@ def public_link_view(link: dict) -> dict:
     public_fields = ["id", "title", "url", "tags"]
     public_link = {}
 
-    #Populate new dictionary.
+    #Populate the new dictionary with only the public fields from the original link.
+    #Also create a copy of the tags list to avoid mutating the original link's tags.
     for field in public_fields:
         if field in link:
-            public_link[field] = link[field]
+            if field == "tags":
+                public_link[field] = link[field].copy()
+            else:
+                public_link[field] = link[field]
 
     return public_link
 
