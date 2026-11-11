@@ -25,6 +25,25 @@ def test_issue_03():
 def test_issue_04():
     assert next_link_id([{"id": 2}, {"id": 9}]) == 10
 
+## Writing test cases first w/ matching syntax
+def test_issue_04_ex_from_issue():
+    assert next_link_id([{"id": 2}, {"id": 4}, {"id": 9}]) == 10
+
+def test_issue_04_empty_list():
+    assert next_link_id([])==1
+
+def test_issue_04_single_link():
+    assert next_link_id([{"id": 5}]) == 6
+
+def test_issue_04_reordering_result_check():
+    in_order = [{"id": 2}, {"id": 4}, {"id": 9}]
+    reordered = [{"id": 9}, {"id": 2}, {"id": 4}]
+    assert next_link_id(in_order) == next_link_id(reordered) == 10
+
+def test_issue_04_skip_missing_and_noninteger_ids():
+    assert next_link_id([{"id": 5}, {"title": "no id"}, {"id": "4"}]) == 6
+
+
 
 def test_issue_05():
     original = {"id": 1, "archived": True}

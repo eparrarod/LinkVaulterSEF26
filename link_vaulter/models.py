@@ -20,7 +20,9 @@ def normalize_tags(tags: list[str]) -> list[str]:
 
 def next_link_id(links: list[dict]) -> int:
     """Issue 04: return one greater than the largest existing integer id"""
-    return len(links) + 1
+    ## collecting only real integer IDs, skipping missing/noninteger IDs
+    ids = [link["id"] for link in links if isinstance(link.get("id"), int)]
+    return max(ids, default = 0) + 1
 
 
 def restore_link(link: dict) -> dict:
