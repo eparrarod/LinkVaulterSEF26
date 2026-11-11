@@ -16,7 +16,7 @@ def pluralize_visits(count: int) -> str:
 
 def safe_tag_html(tag: str) -> str:
     """Issue 18: escape user text before placing it inside tag markup."""
-    return f'<span class="tag">{tag}</span>'
+    return f'<span class="tag">{escape(tag, quote=True)}</span>'
 
 
 def truncate_title(title: str, limit: int = 40) -> str:
