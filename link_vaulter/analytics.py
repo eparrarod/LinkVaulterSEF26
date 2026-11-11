@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import Counter
 
-from link_vaulter.search import active_links
+"""from link_vaulter.search import active_links""" #removed 
 
 
 def count_active(links: list[dict]) -> int:
