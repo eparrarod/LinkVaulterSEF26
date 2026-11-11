@@ -12,6 +12,9 @@ from link_vaulter.validation import has_valid_tag_length, is_nonblank_title, is_
 
 def test_issue_01():
     assert normalize_url("HTTPS://Example.COM/Docs/ReadMe/") == "https://example.com/Docs/ReadMe"
+    assert normalize_url("HTTPS://Example.coM/docs/readme/") == "https://example.com/docs/readme"
+    assert normalize_url("https://example.com/") == "https://example.com/"
+    assert normalize_url("https://Example.com/A/B?Q=X#Frag") == "https://example.com/A/B?Q=X#Frag"
 
 
 def test_issue_02():
