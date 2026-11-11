@@ -22,7 +22,7 @@ def most_common_tag(links: list[dict]) -> str | None:
 
 def total_visits(links: list[dict]) -> int:
     """Issue 29: sum nonnegative visit counts while tolerating missing values."""
-    return sum(item["visits"] for item in links)
+    return sum(max(item.get("visits", 0), 0) for item in links)
 
 
 def unique_domains(links: list[dict]) -> int:
