@@ -178,11 +178,41 @@ def test_issue_22():
         import_json('{"title": "A"}')
 
 
-def test_issue_23():
+def test_issue_23_titles():
     payload = export_csv([{"title": "One, Two", "url": "https://x.test", "tags": ["a", "b"]}])
+    #Checks titles with commas round-trip correctly
     assert '"One, Two"' in payload
+
+    payload = export_csv([{"title": "One\nTwo", "url": "https://x.test", "tags": ["a", "b"]}])
+    #Checks titles with newlines round-trip correctly
+    assert '"One\nTwo"' in payload
+
+    payload = export_csv([{"title": "One,Two\nThree", "url": "https://x.test", "tags": ["a", "b"]}])
+    #Checks titles with commas and newlines round-trip correctly
+    assert '"One,Two\nThree"' in payload
+
+def test_issue_23_quotes():
+    payload = export_csv([{"title": 'One "Not" Two', "url": "https://x.test", "tags": ["aaa",'b"bb',"ccc"]}])
+    #Checks quotes are escaped properly
+    assert '"One ""Not"" Two"' in payload
+    assert 'aaa;b""bb;ccc' in payload
+
+def test_issue_23_tags():
+    payload = export_csv([{"title": "One, Two", "url": "https://x.test", "tags": ["a", "b"]}])
+    #Checks that tags are separated by ";" and not ","
+    assert "a,b" not in payload
     assert "a;b" in payload
 
+    payload = export_csv([{"title": "One, Two", "url": "https://x.test", "tags": []}])
+    #Checks empty tags produce empty fields
+    assert payload.splitlines()[1].endswith(",")
+
+    payload = export_csv([{"title": "One, Two", "url": "https://x.test"}])
+    #Checks missing tags produce empty fields
+    assert payload.splitlines()[1].endswith(",")
+
+    #Checks header and record remain in same order
+    assert payload.startswith("title,url,tags")
 
 def test_issue_24():
     payload = "title,url,tags\nA,https://a.test,python;web\n,,\n"

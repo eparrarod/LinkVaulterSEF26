@@ -21,7 +21,7 @@ def export_csv(links: list[dict]) -> str:
     writer = csv.writer(output)
     writer.writerow(["title", "url", "tags"])
     for item in links:
-        writer.writerow([item["title"], item["url"], ",".join(item.get("tags", []))])
+        writer.writerow([item["title"], item["url"], ";".join(item.get("tags", []))])
     return output.getvalue()
 
 
