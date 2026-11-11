@@ -56,7 +56,17 @@ def test_issue_05():
 
 
 def test_issue_06():
-    assert is_nonblank_title("  ") is False
+
+    assert is_nonblank_title("  ") is False # Tests a blank title
+
+    assert is_nonblank_title("\n") is False # Tests a title with a newline
+
+    assert is_nonblank_title("\t") is False # Tests a title with a tab
+
+    assert is_nonblank_title("asdf") is True # Tests a title with text
+
+    assert is_nonblank_title("  asdf  ") is True # Tests a title with text and blank space
+
 
 
 def test_issue_07():
@@ -119,8 +129,21 @@ def test_issue_11():
 
 
 def test_issue_12():
+    #Tests generic all upper/lowercase
     links = [{"title": "Python Guide", "url": "https://example.com"}, {"title": "Other", "url": "https://PYTHON.org"}]
-    assert search_text(links, "python") == links
+    assert search_text(links, "python") == links # Test to ensure that the lowercase title works
+
+    assert search_text(links, "PYTHON") == links # Test to ensure that the uppercase title works
+
+    # Test to ensure that a query that fits both is not returned twice
+    links = [{"title": "Python Guide", "url": "https://example.com"}, {"title": "Other", "url": "https://PYTHON.org"}, {"title": "Python", "url": "https://PYTHON.org"}]
+    assert search_text(links, "") == links
+
+    # Test to ensure that an empty string returns everything
+    links = [{"title": "Python Guide", "url": "https://example.com"}, {"title": "Other", "url": "https://PYTHON.org"}, {"title": "Other", "url": "https://other.org"}]
+    assert search_text(links, "") == links
+
+
 
 
 def test_issue_13():
