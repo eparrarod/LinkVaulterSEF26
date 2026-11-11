@@ -21,24 +21,7 @@ def safe_tag_html(tag: str) -> str:
 
 def truncate_title(title: str, limit: int = 40) -> str:
     """Issue 19: enforce total length including ellipsis; do not alter short text."""
-    #I'm assuming that the limit can be overridden by the user so I wrote code for that?
-
-    #If no characters then return nothing.
-    if limit <= 0:
-        return ""
-
-    #If the title works then keep it unchanged.
-    if len(title) <= limit:
-        return title
-
-    # If the limit can only fit elipsis, then only return elipsis.
-    if limit <= 3:
-        return "." * limit
-
-    #Shorten the link to add the elipsis.
-    letters_to_keep = limit - 3
-    shortened_title = title[:letters_to_keep]
-    return shortened_title + "..."
+    return title[:limit] + "..."
 
 
 def relative_age(iso_timestamp: str, now: datetime | None = None) -> str:
