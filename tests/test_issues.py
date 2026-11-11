@@ -148,6 +148,14 @@ def test_issue_20():
 def test_issue_21():
     result = export_json([{"title": "Café", "id": 1}])
     assert result == '[\n  {\n    "id": 1,\n    "title": "Café"\n  }\n]'
+def test_issue_21_ordering():
+    links = [
+        {"title": "Café", "id": 2},
+        {"title": "Résumé", "id": 1}
+    ]   
+     
+    result = export_json(links) 
+    assert result.index("Café") < result.index("Résumé")
 
 
 def test_issue_22():

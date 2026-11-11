@@ -7,7 +7,10 @@ import json
 
 def export_json(links: list[dict]) -> str:
     """Issue 21: produce stable, UTF-8-friendly, pretty JSON."""
-    return json.dumps(links)
+    return json.dumps(links, 
+    indent=2, #makes json readable with two space indentation
+    sort_keys=True, #sorts keys in alphabetical order
+    ensure_ascii=False) #keeps foreign characters in their original form
 
 
 def import_json(payload: str) -> list[dict]:
