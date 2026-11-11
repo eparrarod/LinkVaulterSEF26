@@ -21,7 +21,6 @@ def safe_tag_html(tag: str) -> str:
 
 def truncate_title(title: str, limit: int = 40) -> str:
     """Issue 19: enforce total length including ellipsis; do not alter short text."""
-    #I'm assuming that the limit can be overridden by the user so I wrote code for that?
 
     #If no characters then return nothing.
     if limit <= 0:
