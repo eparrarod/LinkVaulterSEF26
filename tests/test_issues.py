@@ -80,12 +80,12 @@ def test_issue_13():
 
 
 def test_issue_14():
-    #create a list of links with different favorite and created_at values to test the sorting3.
+    #create a list of links with different favorite and created_at values to test the sorting.
     links = [
         {"id": 1, "favorite": False, "created_at": "2026-09-03"},
         {"id": 2, "favorite": True, "created_at": "2026-09-01"},
         {"id": 3, "favorite": True, "created_at": "2026-09-02"},
-        #   added a link that is not a faovirte but has the same date a id:2 
+        #   added a link that is not a faovirte but has the same date as id:2 
         #   to test that the sorting is correct and the favorites are first and then sorted by created_at
         {"id": 4, "favorite": False, "created_at": "2026-09-01"},
     ]
@@ -107,6 +107,14 @@ def test_issue_14_no_favorites():
     #   should return the same list sorted by created_at when there are no favorites
     assert [x["id"] for x in favorites_first(links)] == [1, 3, 2]
 
+def test_issue_14_all_favorites():
+    links = [
+        {"id": 1, "favorite": True, "created_at": "2026-09-03"},
+        {"id": 2, "favorite": True, "created_at": "2026-09-01"},
+        {"id": 3, "favorite": True, "created_at": "2026-09-02"}
+    ]
+    #   should return the same list sorted by created_at when there are all favorites
+    assert [x["id"] for x in favorites_first(links)] == [1, 3, 2]
 
 def test_issue_15():
     assert paginate(list(range(10)), page=1, per_page=3) == [0, 1, 2]
