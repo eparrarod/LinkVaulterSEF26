@@ -225,7 +225,22 @@ def test_issue_25():
 
 
 def test_issue_26():
-    assert count_active([{"archived": False}, {"archived": True}, {}]) == 2
+    assert count_active([{"archived": False}, {"archived": True}, {}]) == 1
+
+def test_issue_26_empty():
+    assert count_active([]) == 0
+
+def test_issue_26_blank():
+    assert count_active([{},{},{}]) == 0
+
+def test_issue_26_nested_false():
+    assert count_active([{"archived": True},{"archived": False}, {"archived": True}]) == 1
+
+def test_issue_26_nested_true():
+    assert count_active([{"archived": False},{"archived": True}, {"archived": False}]) == 2
+
+def test_issue_26_nested_blank():
+    assert count_active([{"archived": False},{},{"archived": True},{}, {"archived": False}]) == 2
 
 
 def test_issue_27():

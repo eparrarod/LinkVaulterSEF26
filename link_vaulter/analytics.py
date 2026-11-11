@@ -5,7 +5,13 @@ from collections import Counter
 
 def count_active(links: list[dict]) -> int:
     """Issue 26: count links that are not archived."""
-    return len(links)
+    count = 0
+    for item in links:
+        if "archived" in item.keys():
+            if not item["archived"]:
+                count +=1
+            continue
+    return count
 
 
 def favorite_rate(links: list[dict]) -> float:
