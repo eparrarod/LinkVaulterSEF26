@@ -13,9 +13,12 @@ def search_text(links: list[dict], query: str) -> list[dict]:
 
 def filter_any_tag(links: list[dict], tags: list[str]) -> list[dict]:
     """Issue 13: match any selected tag once; empty selection returns all"""
+    #If the tags parameter is empty, returns all links
     if not tags:
-        return []
-    return [item for item in links if all(tag in item["tags"] for tag in tags)]
+        return links
+    #A for loop that looks for any tag within the list of links regardless of case sensitivity or whitespace.
+    #It then adds each link that matches the tag to an array and returns the array once the loop is over.
+    return [item for item in links if any(tag.lower().strip() in [t.lower().strip() for t in item["tags"]] for tag in tags)]
 
 
 def favorites_first(links: list[dict]) -> list[dict]:

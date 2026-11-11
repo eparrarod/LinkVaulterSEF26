@@ -13,7 +13,6 @@ from link_vaulter.validation import has_valid_tag_length, is_nonblank_title, is_
 def test_issue_01():
     assert normalize_url("HTTPS://Example.COM/Docs/ReadMe/") == "https://example.com/Docs/ReadMe"
 
-
 def test_issue_02():
     assert normalize_title("  Pull   Requests  ") == "Pull   Requests"
 
@@ -123,11 +122,27 @@ def test_issue_12():
     assert search_text(links, "python") == links
 
 
-def test_issue_13():
-    links = [{"id": 1, "tags": ["python", "web"]}, {"id": 2, "tags": ["web"]}]
-    assert filter_any_tag(links, ["python", "web"]) == links
-    assert filter_any_tag(links, []) == links
+def test_issue_13_matching():
+    links = [{"id": 1, "tags": ["python", "web"]}, {"id": 2, "tags": ["web"]}, {"id": 3, "tags": ["math", "test"]}]
+    #These test tests that any link matching the tag is included and that non-matching links are excluded.
+    assert filter_any_tag(links, ["python", "web"]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 2, "tags": ["web"]}]
+    assert filter_any_tag(links, ["web"]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 2, "tags": ["web"]}]
+    assert filter_any_tag(links, ["python"]) == [{"id": 1, "tags": ["python", "web"]}]
+    assert filter_any_tag(links, ["SE"]) == []
 
+def test_issue_13_empty_tag():
+    links = [{"id": 1, "tags": ["python", "web"]}, {"id": 2, "tags": ["web"]}, {"id": 3, "tags": ["math", "test"]}]
+    #The next two line tests that all links are returned if there are no tags inputted, and that otherwise it's false
+    assert filter_any_tag(links, []) == links
+    assert filter_any_tag(links, ["math", "test"]) != links
+
+def test_issue_13_case_insensitive():
+    links = [{"id": 1, "tags": ["python", "web"]}, {"id": 4, "tags": ["Python"]}]
+    #The next few lines test that the case sensitivity or whitespace doesn't interfere with matching a tag
+    assert filter_any_tag(links, [" python "]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 4, "tags": ["Python"]}]
+    assert filter_any_tag(links, ["PytHon"]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 4, "tags": ["Python"]}]
+    assert filter_any_tag(links, ["  pYthOn  "]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 4, "tags": ["Python"]}]
+    assert filter_any_tag(links, ["Python"]) == [{"id": 1, "tags": ["python", "web"]}, {"id": 4, "tags": ["Python"]}]
 
 def test_issue_14():
     links = [
