@@ -27,7 +27,33 @@ def export_csv(links: list[dict]) -> str:
 
 def import_csv(payload: str) -> list[dict]:
     """Issue 24: skip blank rows and split semicolon-delimited tags."""
-    return list(csv.DictReader(io.StringIO(payload)))
+    # Converts the comma separated string into a dictionary
+    raw_list = list(csv.DictReader(io.StringIO(payload)))
+
+    # If no tags column then add one and have it blank
+    # Or if tags is none then make it blank
+    for raw in raw_list:
+        if "tags" not in raw:
+            raw["tags"] = ""
+        elif raw["tags"] is None:
+            raw["tags"] = ""
+
+    # Removes the blank rows
+    unblank_list = [raw for raw in raw_list if raw["title"].strip() != ""
+                    or raw["url"].strip() != ""
+                    or raw["tags"].strip() != ""]
+
+
+    # Separates the tags by ; for each entry and then removes blank ones
+    # And also remove any trailing space in each string
+    tagged_list =[]
+    for val in unblank_list:
+        val["tags"] = val["tags"].strip().split(";")
+        val["tags"] = [tag.strip() for tag in val["tags"]]
+        tagged_list.append(val)
+        val["tags"] = [tag for tag in val["tags"] if tag != ""]
+
+    return tagged_list
 
 
 def public_link_view(link: dict) -> dict:

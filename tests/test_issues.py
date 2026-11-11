@@ -164,8 +164,49 @@ def test_issue_23():
 
 def test_issue_24():
     payload = "title,url,tags\nA,https://a.test,python;web\n,,\n"
+    # Checks the import_csv method returns the payload in the right format
     assert import_csv(payload) == [{"title": "A", "url": "https://a.test", "tags": ["python", "web"]}]
 
+def test_issue_24_space_between_tags():
+    payload = "title,url,tags\nA,https://a.test,python ; web"
+    # Checks the import_csv method returns the payload in the right format with space between tags
+    assert import_csv(payload) == [{"title": "A", "url": "https://a.test", "tags": ["python", "web"]}]
+
+
+def test_issue_24_skip_blank():
+    payload = "title,url,tags\n,,\nA,https://a.test,python;web\n,,"
+    # # Checks the import_csv method returns the payload in the right format skipping blank entries
+    assert import_csv(payload) == [{"title": "A", "url": "https://a.test", "tags": ["python", "web"]}]
+
+def test_issue_24_blank_tag_segment():
+    payload = ("title,url,tags\nB,https://b.test,python;;web\n")
+    # Checks the import_csv method returns the payload in the right format if the tag segment is blank
+    assert import_csv(payload) == [{"title":"B","url":"https://b.test","tags":["python","web"]}]
+
+def test_issue_24_blank_tag():
+    payload = ("title,url,tags\nB,https://b.test,\n")
+    # Checks the import_csv method returns the payload in the right format being no tags
+    assert import_csv(payload) == [{"title":"B","url":"https://b.test","tags":[]}]
+
+def test_issue_24_missing_tags_column():
+    payload = ("title,url\nB,https://b.test\n")
+    # Checks the import_csv method returns the payload in the right format even with a missing tags column
+    assert import_csv(payload) == [{"title":"B","url":"https://b.test","tags":[]}]
+
+def test_issue_24_missing_partial_row():
+    # Checks the import_csv method returns the payload in the right format with multiple items
+    # in the payload and with different aspects of each missing
+    payload = ("title,url,tags\n,https://b.test,\nB,,\n,,python;web\n")
+    assert import_csv(payload) == [{"title": "", "url": "https://b.test", "tags": []},
+                                   {"title": "B", "url": "", "tags": []},
+                                   {"title": "", "url": "", "tags": ["python", "web"]}]
+
+
+def test_issue_24_missing_tag_value():
+    payload = ("title,url,tags\nB,https://b.test\n")
+    # Checks the import_csv method returns the payload in the right format
+    # without a tag value in the payload
+    assert import_csv(payload) == [{"title":"B","url":"https://b.test","tags":[]}]
 
 def test_issue_25():
     original = {"id": 1, "title": "A", "url": "https://a.test", "tags": [], "owner_email": "student@example.edu", "internal_notes": "private"}
