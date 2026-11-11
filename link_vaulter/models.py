@@ -10,7 +10,7 @@ def normalize_url(url: str) -> str:
 
 def normalize_title(title: str) -> str:
     """Issue 02: trim surrounding whitespace without altering internal spacing"""
-    return title
+    return title.strip()
 
 
 def normalize_tags(tags: list[str]) -> list[str]:
