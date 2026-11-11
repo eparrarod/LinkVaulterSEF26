@@ -183,6 +183,27 @@ def test_issue_27():
     assert favorite_rate(links) == 50.0
     assert favorite_rate([]) == 0.0
 
+def test_issue_27_archived_links():
+   links = [
+       {"favorite": True, "archived": True},
+       {"favorite": True, "archived": False},
+       {"favorite": False, "archived": False},   
+   ]
+   assert favorite_rate(links) == 50.0
+
+def test_issue_27_missing_favorites():
+    links = [
+        {"archived": False},
+        {"favorite": True, "archived": False} 
+    ]
+    assert favorite_rate(links) == 50.0
+
+def test_issue_27_all_archived():
+    links = [
+        {"favorite": True, "archived": True},
+        {"favorite": False, "archived": True}
+    ]
+    assert favorite_rate(links) == 0.0
 
 def test_issue_28():
     links = [{"tags": ["Web", "python"]}, {"tags": ["web", "Python"]}]
