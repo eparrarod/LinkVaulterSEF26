@@ -250,6 +250,23 @@ def test_issue_28():
 def test_issue_29():
     assert total_visits([{"visits": 3}, {"visits": -2}, {}]) == 3
 
+def test_issue_29_empty_list():
+    assert total_visits([]) == 0
+
+def test_issue_29_zero_visits():
+    assert total_visits([{"visits": 0}]) == 0
+
+def test_issue_29_unchanged_input() :
+    links = [{"visits": -5}, {"visits": 10}]
+    original = [item.copy() for item in links]
+
+    assert total_visits(links) == 10
+    assert links == original 
+
+
+
+
+
 
 def test_issue_30():
     links = [
