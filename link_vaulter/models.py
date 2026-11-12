@@ -14,8 +14,25 @@ def normalize_title(title: str) -> str:
 
 
 def normalize_tags(tags: list[str]) -> list[str]:
-    """Issue 03: trim, lowercase, remove blanks/duplicates, preserve first order"""
-    return [tag.lower() for tag in tags]
+    """
+    Cleans up a list of tags by removing extra spaces, converting them
+    to lowercase, and removing blanks and duplicates.
+
+    Args:
+        tags: A list of tag strings to normalize.
+
+    Returns:
+        A list of cleaned, unique tags in their original order.
+    """
+    normalized = []
+
+    for tag in tags:
+        tag = tag.strip().lower()
+
+        if tag and tag not in normalized:
+            normalized.append(tag)
+
+    return normalized
 
 
 def next_link_id(links: list[dict]) -> int:

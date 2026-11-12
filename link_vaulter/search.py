@@ -18,10 +18,6 @@ def filter_any_tag(links: list[dict], tags: list[str]) -> list[dict]:
     return [item for item in links if all(tag in item["tags"] for tag in tags)]
 
 
-def get_created_at(link):
-    """Issue 14: favorites first, newest first within both groups"""
-    return link.get("created_at", "")
-
 def favorites_first(links: list[dict]) -> list[dict]:
     """Issue 14: favorites first, newest first within both groups"""
     return sorted(links, key=lambda item: item.get("created_at", ""), reverse=True)

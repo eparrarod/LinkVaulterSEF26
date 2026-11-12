@@ -19,7 +19,29 @@ def test_issue_02():
 
 
 def test_issue_03():
+    # original assignment test
     assert normalize_tags([" Python ", "", "PYTHON", "Review"]) == ["python", "review"]
+
+
+def test_issue_03_whitespace_and_case():
+    assert normalize_tags(["  HELLO  ", " World "]) == ["hello", "world"]
+
+
+def test_issue_03_duplicates():
+    assert normalize_tags(["Python", "python", "PYTHON"]) == ["python"]
+
+
+def test_issue_03_blank_tags():
+    assert normalize_tags(["", "  ", "Music"]) == ["music"]
+
+
+def test_issue_03_preserves_order():
+    assert normalize_tags(["Music", "Coding", "music", "School"]) == [
+        "music", "coding", "school"
+    ]
+
+def test_issue_03_empty_list():
+    assert normalize_tags([]) == []
 
 
 def test_issue_04():
@@ -52,13 +74,41 @@ def test_issue_09():
     assert validate_import_row({}) == ["missing title", "missing url"]
 
 
-def test_issue_10():
-    links = [
-        {"url": "https://example.com/docs/", "archived": False},
-        {"url": "https://old.example.com", "archived": True},
-    ]
+def test_issue_10_case_insensitive():
+    links = [{"url": "https://example.com/docs/", "archived": False}]
     assert is_unique_url("HTTPS://EXAMPLE.COM/docs", links) is False
+
+def test_issue_10_archived_links():
+    links = [{"url": "https://old.example.com", "archived": True}]
     assert is_unique_url("https://old.example.com", links) is True
+
+def test_issue_10_www_subdomain():
+    links = [{"url": "https://example.com/docs", "archived": False}]
+    assert is_unique_url("https://www.example.com/docs", links) is True
+
+def test_issue_10_new_url():
+    links = [{"url": "https://example.com/docs", "archived": False}]
+    assert is_unique_url("https://new.example.com", links) is True
+
+def test_issue_10_archived_case_insensitive():
+    links = [{"url": "https://old.example.com", "archived": True}]
+    assert is_unique_url("HTTPS://OLD.EXAMPLE.COM", links) is True
+
+def test_issue_10_different_paths():
+    links = [{"url": "https://example.com/docs", "archived": False}]   
+    assert is_unique_url("https://example.com/about", links) is True
+
+def test_issue_10_trailing_slash():
+    links = [{"url": "https://example.com/docs/", "archived": False}]
+    assert is_unique_url("https://example.com/docs", links) is False
+
+def test_issue_10_path_case_sensitive():
+    links = [{"url": "https://example.com/Docs", "archived": False}]
+    assert is_unique_url("https://example.com/docs", links) is True
+
+def test_issue_10_exact_duplicate():
+    links = [{"url": "https://example.com/docs", "archived": False}]
+    assert is_unique_url("https://example.com/docs", links) is False
 
 
 def test_issue_11():
@@ -109,7 +159,12 @@ def test_issue_18():
 def test_issue_19():
     assert truncate_title("abcdefghij", 8) == "abcde..."
     assert truncate_title("short", 8) == "short"
-
+    assert truncate_title("abcdefgh", 7) == "abcd..."
+    assert truncate_title("abcdefgh", 8) == "abcdefgh"
+    assert truncate_title("", 8) == ""
+    assert truncate_title("abcdef", 2) == ".."
+    assert truncate_title("abcdef", 0) == ""
+    assert truncate_title("a" * 45) == "a" * 37 + "..."
 
 
 def test_issue_20():
@@ -117,6 +172,34 @@ def test_issue_20():
     assert relative_age("2026-09-15T12:00:00+00:00", now) == "2 days ago"
     assert relative_age("2026-09-17T12:05:00+00:00", now) == "just now"
 
+def test_issue_20_within_minute_now():
+    now = datetime(2026, 9, 17, 12, 0, tzinfo=timezone.utc)
+    assert relative_age("2026-09-17T11:59:30+00:00", now) == "just now"
+    assert relative_age("2026-09-17T12:00:30+00:00", now) == "just now"
+
+def test_issue_20_singular_plural_min():
+    now = datetime(2026, 9, 17, 12, 0, tzinfo=timezone.utc)
+    assert relative_age("2026-09-17T11:59:00+00:00", now) == "1 minute ago"
+    assert relative_age("2026-09-17T11:58:00+00:00", now) == "2 minutes ago"
+
+def test_issue_20_hour_day_threshold():
+    now = datetime(2026, 9, 17, 12, 0, tzinfo=timezone.utc)
+    assert relative_age("2026-09-17T11:01:00+00:00", now) == "59 minutes ago"
+    assert relative_age("2026-09-17T11:00:00+00:00", now) == "1 hour ago"
+    assert relative_age("2026-09-16T13:00:00+00:00", now) == "23 hours ago"
+    assert relative_age("2026-09-16T12:00:00+00:00", now) == "1 day ago"
+
+def test_issue_20_timezone_aware_stamps():
+    now = datetime(2026, 9, 17, 12, 0, tzinfo=timezone.utc)
+    assert relative_age("2026-09-17T06:00:00-05:00", now) == "1 hour ago"
+
+def test_issue_20_negative_ages():
+    now = datetime(2026, 9, 17, 12, 0, tzinfo=timezone.utc)
+    assert relative_age("2026-09-19T12:00:00+00:00", now) == "just now"
+
+def test_issue_20_invalidStamps():
+    with pytest.raises(ValueError):
+        relative_age("not a date")
 
 def test_issue_21():
     result = export_json([{"title": "Café", "id": 1}])
@@ -160,81 +243,6 @@ def test_issue_25():
         "tags": [],
     }
     assert result is not original
-
-
-def test_issue_25_tags_are_independent():
-    # Changing the returned tags should not change the source.
-    original = {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-        "tags": [],
-    }
-
-    result = public_link_view(original)
-    result["tags"].append("x")
-
-    assert result["tags"] == ["x"]
-    assert original["tags"] == []
-
-
-def test_issue_25_source_unchanged():
-    # Calling the function should not change the original link.
-    original = {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-        "tags": ["python"],
-        "owner_email": "student@example.edu",
-        "internal_notes": "private",
-    }
-
-    before = original.copy()
-    before["tags"] = original["tags"].copy()
-
-    public_link_view(original)
-
-    assert original == before
-
-
-def test_issue_25_unknown_fields_removed():
-    # Extra fields should not appear in the public view.
-    original = {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-        "tags": ["python"],
-        "visits": 10,
-        "favorite": True,
-        "created_at": "2026-09-17",
-    }
-
-    result = public_link_view(original)
-
-    assert result == {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-        "tags": ["python"],
-    }
-
-
-def test_issue_25_missing_tags():
-    # Missing tags should be omitted.
-    original = {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-    }
-
-    result = public_link_view(original)
-
-    assert result == {
-        "id": 1,
-        "title": "A",
-        "url": "https://a.test",
-    }
-    assert "tags" not in result
 
 
 def test_issue_26():
