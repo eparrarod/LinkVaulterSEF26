@@ -1,11 +1,26 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-
+from urllib.parse import urlsplit, urlunsplit
 
 def normalize_url(url: str) -> str:
     """Issue 01: normalize scheme/host case and one trailing slash"""
-    return url.lower().rstrip("/")
+    #Issue 01: lowercase scheme/host, drop one trailing slash from the path.
+    #Path, query, and fragment case are preserved. A root URL keeps its "/".
+
+    parts = urlsplit(url.strip())
+    scheme = parts.scheme.lower()
+
+    # Lowercase only the host[:port]; userinfo (user:pass@) is case-sensitive.
+    userinfo, at, hostport = parts.netloc.rpartition("@")
+    netloc = f"{userinfo}{at}{hostport.lower()}"
+
+    path = parts.path
+    if netloc and not path:
+        path = ("/")
+    elif len(path) > 1 and path.endswith("/"):
+        path = path[:-1]
+    return urlunsplit((scheme, netloc, path, parts.query, parts.fragment))
 
 
 def normalize_title(title: str) -> str:

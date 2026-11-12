@@ -12,6 +12,9 @@ from link_vaulter.validation import has_valid_tag_length, is_nonblank_title, is_
 
 def test_issue_01():
     assert normalize_url("HTTPS://Example.COM/Docs/ReadMe/") == "https://example.com/Docs/ReadMe"
+    assert normalize_url("HTTPS://Example.coM/docs/readme/") == "https://example.com/docs/readme"
+    assert normalize_url("https://example.com/") == "https://example.com/"
+    assert normalize_url("https://Example.com/A/B?Q=X#Frag") == "https://example.com/A/B?Q=X#Frag"
 
 
 def test_issue_02():
@@ -142,6 +145,10 @@ def test_issue_15():
     assert paginate(list(range(10)), page=1, per_page=3) == [0, 1, 2]
     with pytest.raises(ValueError):
         paginate([], page=1, per_page=0)
+    assert paginate(list(range(10)), page=2, per_page=3) == [3, 4, 5]
+    assert paginate(list(range(10)), page=4, per_page=3) == [9]
+    assert paginate(list(range(10)), page=5, per_page=3) == []
+    assert paginate([], page=1, per_page=3) == []
 
 
 def test_issue_16():

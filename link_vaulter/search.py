@@ -25,6 +25,10 @@ def favorites_first(links: list[dict]) -> list[dict]:
 
 def paginate(links: list[dict], page: int, per_page: int) -> list[dict]:
     """Issue 15: use one-based pages and reject invalid page sizes"""
-    start = page * per_page
+    if page < 1:
+        raise ValueError(f"page must be >= 1, got {page}")
+    if per_page < 1:
+        raise ValueError(f"per_page must be >= 1, got {per_page}")
+    start = (page-1) * per_page
     return links[start : start + per_page]
 
