@@ -10,8 +10,9 @@ def count_active(links: list[dict]) -> int:
 
 def favorite_rate(links: list[dict]) -> float:
     """Issue 27: percentage of active links that are favorites; zero when empty."""
-    favorites = sum(bool(item.get("favorite")) for item in links)
-    return favorites / len(links)
+    active_links = [item for item in links if not item.get("archived", False)]
+    favorites = sum(bool(item.get("favorite")) for item in active_links)
+    return (favorites / len(active_links)) * 100 if len(active_links) > 0 else 0.0
 
 
 def most_common_tag(links: list[dict]) -> str | None:
