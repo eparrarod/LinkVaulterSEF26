@@ -157,8 +157,16 @@ def test_issue_18():
 
 
 def test_issue_19():
+    #The original 2 tests tests for greater length and short length.
+    #Added testing to check for exact length, empty string, very small limits, and default limit.
     assert truncate_title("abcdefghij", 8) == "abcde..."
     assert truncate_title("short", 8) == "short"
+    assert truncate_title("abcdefgh", 7) == "abcd..."
+    assert truncate_title("abcdefgh", 8) == "abcdefgh"
+    assert truncate_title("", 8) == ""
+    assert truncate_title("abcdef", 2) == ".."
+    assert truncate_title("abcdef", 0) == ""
+    assert truncate_title("a" * 45) == "a" * 37 + "..."
 
 
 def test_issue_20():
