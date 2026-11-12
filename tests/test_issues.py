@@ -157,8 +157,6 @@ def test_issue_18():
 
 
 def test_issue_19():
-    #The original 2 tests tests for greater length and short length.
-    #Added testing to check for exact length, empty string, very small limits, and default limit.
     assert truncate_title("abcdefghij", 8) == "abcde..."
     assert truncate_title("short", 8) == "short"
     assert truncate_title("abcdefgh", 7) == "abcd..."
@@ -226,9 +224,24 @@ def test_issue_24():
 
 
 def test_issue_25():
-    original = {"id": 1, "title": "A", "url": "https://a.test", "tags": [], "owner_email": "student@example.edu", "internal_notes": "private"}
+    # Return only public fields in a new dictionary.
+    original = {
+        "id": 1,
+        "title": "A",
+        "url": "https://a.test",
+        "tags": [],
+        "owner_email": "student@example.edu",
+        "internal_notes": "private",
+    }
+
     result = public_link_view(original)
-    assert result == {"id": 1, "title": "A", "url": "https://a.test", "tags": []}
+
+    assert result == {
+        "id": 1,
+        "title": "A",
+        "url": "https://a.test",
+        "tags": [],
+    }
     assert result is not original
 
 

@@ -32,5 +32,18 @@ def import_csv(payload: str) -> list[dict]:
 
 def public_link_view(link: dict) -> dict:
     """Issue 25: expose public fields only and return a new dictionary."""
-    return link
+    #Create new fields and dictionary.
+    public_fields = ["id", "title", "url", "tags"]
+    public_link = {}
+
+    #Populate the new dictionary with only the public fields from the original link.
+    #Also create a copy of the tags list to avoid mutating the original link's tags.
+    for field in public_fields:
+        if field in link:
+            if field == "tags":
+                public_link[field] = link[field].copy()
+            else:
+                public_link[field] = link[field]
+
+    return public_link
 
