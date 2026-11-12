@@ -49,10 +49,23 @@ def test_issue_04():
 
 
 def test_issue_05():
-    original = {"id": 1, "archived": True}
+    original = {"id": 1, "archived": True, "title": "Google", "favorite": True}
     restored = restore_link(original)
-    assert restored == {"id": 1, "archived": False}
-    assert original == {"id": 1, "archived": True}
+
+    # restored link should be active
+    assert restored == {"id": 1, "archived": False, "title": "Google", "favorite": True}
+
+    # original link should stay the same
+    assert original == {"id": 1, "archived": True, "title": "Google", "favorite": True}
+
+    # make sure it's a different dictionary
+    assert restored is not original
+
+    # restoring an already active link should still work
+    active = {"id": 2, "archived": False}
+    active_restored = restore_link(active)
+    assert active_restored["archived"] is False
+    assert active_restored is not active
 
 
 def test_issue_06():
