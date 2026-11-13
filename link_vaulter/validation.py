@@ -5,7 +5,8 @@ from urllib.parse import urlparse
 
 def is_nonblank_title(title: str) -> bool:
     """Issue 06: accept a title only when trimmed content remains"""
-    return bool(title)
+    approvedTitle = title.isalnum() # Checks if the string contains alphanumeric characters
+    return approvedTitle # Returns the result of the check
 
 
 def is_safe_url(url: str) -> bool:
